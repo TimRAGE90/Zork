@@ -66,12 +66,12 @@ namespace Zork
                     didMove = true;
                     break;
 
-                case Commands.SOUTH when Location.Row < Rooms.GetLength(0) - 1:
+                case Commands.SOUTH when Location.Row < Rooms.Length - 1:
                     Location.Row++;
                     didMove = true;
                     break;
 
-                case Commands.EAST when Location.Column < Rooms.GetLength(1) - 1:
+                case Commands.EAST when Location.Column < Rooms.Length - 1:
                     Location.Column++;
                     didMove = true;
                     break;
