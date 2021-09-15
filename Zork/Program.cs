@@ -5,11 +5,11 @@ namespace Zork
     class Program
     {
 
-        private static string Location
+        private static string CurrentRoom
         {
             get
             {
-                return Rooms[LocationColumn];
+                return Rooms[Location.Row, Location.Column];
             }
         }
 
@@ -21,7 +21,7 @@ namespace Zork
             Commands command = Commands.UNKNOWN;
             while (command != Commands.QUIT)
             {
-                Console.Write($"{Rooms[LocationColumn]}\n> ");
+                Console.Write($"{Rooms[Location.Row, Location.Column]}\n> ");
                 command = ToCommand(Console.ReadLine().Trim());
 
                 string outputString;
@@ -61,17 +61,23 @@ namespace Zork
 
             switch (command)
             {
-                case Commands.NORTH:
-                case Commands.SOUTH:
-                    break;
-
-                case Commands.EAST when LocationColumn < Rooms.Length - 1:
-                    LocationColumn++;
+                case Commands.NORTH when Location.Row > 0:
+                    Location.Row--;
                     didMove = true;
                     break;
 
-                case Commands.WEST when LocationColumn > 0:
-                    LocationColumn--;
+                case Commands.SOUTH when Location.Row < Rooms.GetLength(0) - 1:
+                    Location.Row++;
+                    didMove = true;
+                    break;
+
+                case Commands.EAST when Location.Column < Rooms.GetLength(1) - 1:
+                    Location.Column++;
+                    didMove = true;
+                    break;
+
+                case Commands.WEST when Location.Column > 0:
+                    Location.Column--;
                     didMove = true;
                     break;
             }
@@ -80,7 +86,13 @@ namespace Zork
 
         }
 
-        private static string[] Rooms = { "Forest", "West of House", "Behind House", "Clearing", "Canyon View" };
-        private static int LocationColumn = 1;
+        private static readonly string[,] Rooms =
+        {
+            { "Rocky Trail", "North of House", "Canyon View" },
+            { "Forest", "West of House", "Behind House" },
+            { "Dense Woods", "South of House", "Clearing" }
+        };
+
+        private static (int Row, int Column) Location = (1, 1);
     }
 }
