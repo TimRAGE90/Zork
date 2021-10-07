@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Zork
 {
@@ -100,7 +101,7 @@ namespace Zork
 
         private static bool IsDirection(Commands command) => Directions.Contains(command);
 
-        private static readonly Room[,] Rooms =
+        private static Room[,] Rooms =
         {
             { new Room("Rocky Trail"), new Room("North of House"), new Room("Canyon View") },
             { new Room("Forest"), new Room("West of House"), new Room("Behind House") },
@@ -117,30 +118,7 @@ namespace Zork
 
         private static (int Row, int Column) Location = (1, 1);
 
-        static Program()
-        {
-            RoomMap = new Dictionary<string, Room>();
-            foreach (Room room in Rooms)
-            {
-                RoomMap[room.Name] = room;
-            }
-        }
-
-        private static void InitializeRoomDescriptions(string roomsFilename)
-        {
-            const string fieldDelimiter = "##";
-            const int expectedFieldCount = 2;
-            var roomQuery = from line in File.ReadLine(roomsFilename)
-                            let fields = line.Split(fieldDelimiter)
-                            where fields.Length == expectedFieldCount
-                            select (Name: fields[(int)Fields.Name],
-                                    Description: fields[(int)Fields.Description]);
-
-            foreach (var (Name, Description) in roomQuery)
-            {
-                RoomMap[Name].Description = Description;
-            }
-        }
+        private static void InitializeRooms(string roomsFilename) => Rooms = JsonConvert.DeserializeObject<Room[,]>(File.ReadAllText(roomsFilename));
 
         private enum Fields
         {
@@ -150,6 +128,16 @@ namespace Zork
         private enum CommandLineArguments
         {
             RoomsFilename = 0
+        }
+
+        private static readonly Dictionary<string, Room> RoomMap;
+        static Program()
+        {
+            RoomMap = new Dictionary<string, Room>();
+            foreach (Room room in Rooms)
+            {
+                RoomMap[room.Name] = room;
+            }
         }
     }
 }
