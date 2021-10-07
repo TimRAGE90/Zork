@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Zork
 {
-    enum Commands
+    public enum Commands
     {
         QUIT,
         LOOK,
